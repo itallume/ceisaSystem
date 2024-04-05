@@ -1,30 +1,16 @@
 package ceisaSystem;
 
-import java.awt.EventQueue;
+import Exceptions.NomeInvalido;
+import Exceptions.Quantidadeinvalida;
+import Exceptions.ValorUnitarioInvalido;
+import models.Cadastro;
 
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JTextField;
-import javax.swing.SwingConstants;
-import java.awt.Font;
-import javax.swing.JTabbedPane;
-import java.awt.GridLayout;
-import java.awt.FlowLayout;
-import java.awt.BorderLayout;
-import javax.swing.BoxLayout;
-import java.awt.CardLayout;
-import javax.swing.SpringLayout;
-import javax.swing.GroupLayout;
-import javax.swing.GroupLayout.Alignment;
-import javax.swing.JButton;
-import java.awt.Color;
-import javax.swing.JTextArea;
-import javax.swing.JTextPane;
-import javax.swing.JSeparator;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 public class CadastroItem {
 
@@ -232,40 +218,33 @@ public class CadastroItem {
 			@Override
 			public void mouseClicked(MouseEvent e){	
 				try {
-					
-					if (textFieldNome.getText().isEmpty()) {
-						throw new NumberFormatException("Digite um nome válido.");
-					}
-					if(!verificarCampoInteger(textFieldQuant.getText())) {
-						throw new NumberFormatException("Digite um valor válido para quantidade.");
-					}
-					if(!verificarCampoDouble(textFieldPrecoU.getText())) {
-						throw new NumberFormatException("Digite um valor válido para preço unitário.");
-					}
-					String nome = textFieldNome.getText();	
-					int quantidade = Integer.parseInt(textFieldQuant.getText());
-					double precoUnitario = Double.parseDouble(textFieldPrecoU.getText());
-					
-					if (textFieldPrecoA.getText().isEmpty() && textFieldPrecoV.getText().isEmpty()) {
-						Item novoItem = new Item(nome, quantidade, precoUnitario);
-						avisosLabel.setText(novoItem.getNome());
-					} else {
-						if(!verificarCampoDouble(textFieldPrecoA.getText())) {
-							throw new NumberFormatException("Digite um valor válido para preço atacado.");
-						}
-						if(!verificarCampoDouble(textFieldPrecoV.getText())) {
-							throw new NumberFormatException("Digite um valor válido para preço varejo.");
-						}
-						double precoAtacado = Double.parseDouble(textFieldPrecoA.getText());
-						double precoVarejo = Double.parseDouble(textFieldPrecoV.getText());
-				
-				
-						Item novoItem = new Item(nome, quantidade, precoUnitario, precoAtacado, precoVarejo);
-						avisosLabel.setText(novoItem.getNome());
-				  }}
-				catch(NumberFormatException ex) {
-					avisosLabel.setText(ex.getMessage());}}
-			});
+					var cadastro = new Cadastro(textFieldNome.getText(), textFieldQuant.getText(), textFieldPrecoU.getText());
+					String nome = cadastro.getNome();
+					int quantidade = cadastro.getQuantidade();
+					double precoUnitario = cadastro.getPrecoUnitario();
+
+					var itens = new Item(nome, quantidade, precoUnitario);
+
+					avisosLabel.setText(itens.getNome());
+				  }
+				catch(NomeInvalido ex) {
+					avisosLabel.setText(ex.getMessage());
+					textFieldNome.setText("");
+				}
+				catch(Quantidadeinvalida ex) {
+					avisosLabel.setText(ex.getMessage());
+					textFieldQuant.setText("");
+				}
+				catch(ValorUnitarioInvalido ex) {
+					avisosLabel.setText(ex.getMessage());
+					textFieldPrecoU.setText("");
+				}
+				catch (Exception ex) {
+					avisosLabel.setText(ex.getMessage());
+				}
+			}
+
+				});
 		frame.setVisible(true);
 	}
 }
